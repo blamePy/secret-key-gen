@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Secret Keys</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    
+    $(document).ready(function() {
+  // Manejar el envío del formulario
+  $('form').submit(function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe normalmente
+
+    // Obtener el valor del campo de entrada
+    const parametro = $('input[name="parametro"]').val();
+
+    // Realizar una solicitud POST a la ruta '/generate' en el servidor con el valor del parámetro
+    $.post("/generate", { parametro: parametro }, function(data) {
+      // data contiene el JSON devuelto por el servidor
+      const jsonContainer = $("#json-container");
+      
+      // Mostrar el JSON en el elemento JSON-container
+      jsonContainer.text(JSON.stringify(data, null, 2));
+    });
+  });
+});
+
+</script>
+
+</head>
+<body>
+    <h1>Generador de Secret Keys</h1>
+    <form action="/generate" method="POST">
+        <label for="parametro">Parámetro:</label>
+        <input type="text" name="parametro" required>
+        <button type="submit">Generar Secret Key</button>
+    </form>
+    <div id="json-container">
+        <!-- Aquí se mostrará el JSON -->
+      </div>
+      
+</body>
+</html>
