@@ -3,6 +3,7 @@ const app = express();
 const port = 8010;
 const bodyParser = require('body-parser');
 const oracledb = require('oracledb');
+const { v4: uuidv4 } = require('uuid');
 
 const dbConfig = {
     user: 'PRM',
@@ -23,7 +24,7 @@ app.post('/generate', async (req, res) => {
   const parametro = req.body.parametro;
 
   // Genera la clave secreta
-  const secretKey = generateSecretKey(parametro);
+  const secretKey = generateSecretKey();
 
   try {
     const connection = await oracledb.getConnection(dbConfig);
@@ -45,28 +46,10 @@ app.post('/generate', async (req, res) => {
   }
 });
 
-function generateSecretKey(parametro) {
-    // Genera una clave secreta aleatoria de 16 caracteres
-    const caracteresPermitidos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let secretKey = '';
-  
-    // Cambia 4 a la cantidad de grupos que deseas y 4 a la longitud de cada grupo
-    for (let i = 0; i < 4; i++) {
-        let group = '';
-        for (let j = 0; j < 4; j++) {
-            const randomIndex = Math.floor(Math.random() * caracteresPermitidos.length);
-            group += caracteresPermitidos.charAt(randomIndex);
-        }
-        secretKey += group;
-        if (i < 3) {
-            secretKey += '';
-        }
-    }
-  
-    // Combina el parámetro con la clave secreta (esto es solo un ejemplo)
-    const combinedKey = secretKey;
-  
-    return combinedKey;
+function generateSecretKey() {
+    // Genera un UUID aleatorio
+    const secretKey = uuidv4().replace(/-/g, '');
+    return secretKey;
   }
 
 app.listen(port, () => {
